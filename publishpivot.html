@@ -19,50 +19,44 @@
       height: 100%;
       border: none;
     }
-    #refreshTime, #timer {
+    #nextRefresh {
       position: absolute;
       right: 10px;
+      top: 10px;
       font-size: 16px;
       background: rgba(0,0,0,0.5);
       padding: 5px 10px;
       border-radius: 5px;
       z-index: 1000;
     }
-    #refreshTime { top: 5px; }
-    #timer { top: 35px; }
   </style>
 </head>
 <body>
-  <!-- Last refreshed timestamp -->
-  <div id="refreshTime"></div>
-  <!-- Seconds since last refresh -->
-  <div id="timer">Last refresh: 0s ago</div>
+  <!-- Countdown timer until next refresh -->
+  <div id="nextRefresh">Next refresh in: 300s</div>
 
-  <!-- Pivot sheet iframe (published link) -->
+  <!-- Pivot sheet iframe -->
   <iframe 
     src="https://docs.google.com/spreadsheets/d/e/2PACX-1vSiDsjhE2EM7y1Rw4F-d8tVPvAgcqPu18_JTqc23lEEJYJ0F3A48tQpJakeGsmRSvbzxY86-fZOpEmo/pubhtml?gid=1671693049&single=true" 
     allowfullscreen>
   </iframe>
 
   <script>
-    // Update last refresh timestamp
-    function updateTimestamp() {
-      const now = new Date();
-      document.getElementById('refreshTime').innerText = "Last Refresh: " + now.toLocaleTimeString();
-    }
-    updateTimestamp();
-    setInterval(updateTimestamp, 300000); // every 5 minutes
+    // Countdown to next refresh
+    let secondsRemaining = 300; // 5 minutes
+    const nextRefreshDiv = document.getElementById('nextRefresh');
 
-    // Live timer for seconds since last refresh
-    let secondsSinceRefresh = 0;
-    function updateTimer() {
-      secondsSinceRefresh++;
-      document.getElementById('timer').innerText = "Last refresh: " + secondsSinceRefresh + "s ago";
+    function updateCountdown() {
+      secondsRemaining--;
+      if (secondsRemaining < 0) secondsRemaining = 0;
+      
+      // Format as mm:ss
+      const minutes = Math.floor(secondsRemaining / 60);
+      const seconds = secondsRemaining % 60;
+      nextRefreshDiv.innerText = `Next refresh in: ${minutes}m ${seconds}s`;
     }
-    setInterval(updateTimer, 1000); // every second
 
-    // Reset timer on page reload
-    window.onload = () => { secondsSinceRefresh = 0; }
+    setInterval(updateCountdown, 1000); // Update every second
   </script>
 </body>
 </html>
