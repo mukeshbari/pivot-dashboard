@@ -19,9 +19,8 @@
       height: 100%;
       border: none;
     }
-    #refreshTime {
+    #refreshTime, #timer {
       position: absolute;
-      top: 5px;
       right: 10px;
       font-size: 16px;
       background: rgba(0,0,0,0.5);
@@ -29,26 +28,41 @@
       border-radius: 5px;
       z-index: 1000;
     }
+    #refreshTime { top: 5px; }
+    #timer { top: 35px; }
   </style>
 </head>
 <body>
   <!-- Last refreshed timestamp -->
   <div id="refreshTime"></div>
+  <!-- Seconds since last refresh -->
+  <div id="timer">Last refresh: 0s ago</div>
 
   <!-- Pivot sheet iframe -->
-<iframe 
-  src="https://docs.google.com/spreadsheets/d/e/2PACX-1vYourPivotSheetLink/pubhtml?gid=1671693049&single=true" 
-  allowfullscreen>
-</iframe>
+  <iframe 
+    src="https://docs.google.com/spreadsheets/d/e/2PACX-1vYourPivotSheetLink/pubhtml?gid=1671693049&single=true" 
+    allowfullscreen>
+  </iframe>
 
   <script>
+    // Update last refresh timestamp
     function updateTimestamp() {
       const now = new Date();
       document.getElementById('refreshTime').innerText = "Last Refresh: " + now.toLocaleTimeString();
     }
     updateTimestamp();
-    setInterval(updateTimestamp, 300000); // update timestamp every 5 minutes
+    setInterval(updateTimestamp, 300000); // every 5 minutes
+
+    // Live timer for seconds since last refresh
+    let secondsSinceRefresh = 0;
+    function updateTimer() {
+      secondsSinceRefresh++;
+      document.getElementById('timer').innerText = "Last refresh: " + secondsSinceRefresh + "s ago";
+    }
+    setInterval(updateTimer, 1000); // every second
+
+    // Reset timer on page reload
+    window.onload = () => { secondsSinceRefresh = 0; }
   </script>
 </body>
 </html>
-
